@@ -4,3 +4,6 @@ pinecone
 beautifulsoup4
 requests
 python-dotenv
+fastapi
+uvicorn
+agents

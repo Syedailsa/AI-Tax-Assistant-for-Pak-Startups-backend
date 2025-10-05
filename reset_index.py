@@ -20,7 +20,7 @@ if index_name in pc.list_indexes().names():
 print(f"Creating new index: {index_name}")
 pc.create_index(
     name=index_name,
-    dimension=1536,  # match OpenAI's text-embedding-3-small
+    dimension=1536,  
     metric="cosine",
     spec=ServerlessSpec(cloud="aws", region="us-east-1")
 )

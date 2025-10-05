@@ -18,23 +18,23 @@ pc = Pinecone(api_key=PINECONE_API_KEY)
 index_name = "tax-agent-index"
 index = pc.Index(index_name)
 
-# Step 1: Scrape website
+# Scrape website
 url = "https://fbr.gov.pk/income-tax-basics/51147/61148"
 response = requests.get(url)
 soup = BeautifulSoup(response.text, "html.parser")
 
-# Get only visible text (basic)
+# Get only visible text 
 text = " ".join([p.get_text() for p in soup.find_all("p")])
 
-# Split into chunks (optional: better for long pages)
+# Split into chunks 
 chunks = [text[i:i+500] for i in range(0, len(text), 500)]
 
-# ✅ Make IDs unique per website page (domain + slug)
+# Make IDs unique per website page (domain + slug)
 parsed = urlparse(url)
 domain = parsed.netloc.replace(".", "-")
-slug = parsed.path.strip("/").replace("/", "-") or "root"  # fallback if path is empty
+slug = parsed.path.strip("/").replace("/", "-") or "root"  
 
-# Step 2: Generate embeddings and upsert
+# Generate embeddings and upsert
 for i, chunk in enumerate(chunks):
     embedding = openai_client.embeddings.create(
         model="text-embedding-3-small",
@@ -42,7 +42,7 @@ for i, chunk in enumerate(chunks):
     ).data[0].embedding
 
     index.upsert(vectors=[{
-        "id": f"{domain}-{slug}-doc-{i}",   # ✅ unique per page
+        "id": f"{domain}-{slug}-doc-{i}",   # unique per page
         "values": embedding,
         "metadata": {
             "text": chunk,
@@ -50,4 +50,4 @@ for i, chunk in enumerate(chunks):
         }
     }])
 
-print("✅ Website content embedded into Pinecone successfully without overwriting old data!")
+print("✅ Website content embedded into Pinecone successfully!")
