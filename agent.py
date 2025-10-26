@@ -40,7 +40,7 @@ def retrieve_context(query: str) -> str:
     results = index.query(vector=embedding, top_k=3, include_metadata=True)
 
     if not results["matches"]:
-        return "No relevant tax info found."
+        return "Sorry, currently we dont know about the matter."
 
     context = "\n".join([m["metadata"]["text"] for m in results["matches"]])
     return context

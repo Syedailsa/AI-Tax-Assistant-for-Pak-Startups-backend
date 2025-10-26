@@ -6,4 +6,5 @@ requests
 python-dotenv
 fastapi
 uvicorn
-agents
+openai-agents
+tensorflow-probability
