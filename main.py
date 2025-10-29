@@ -1,12 +1,10 @@
-# main.py
 import os
 from dotenv import load_dotenv
 load_dotenv()
 
-from fastapi import FastAPI, HTTPException, Header
+from fastapi import FastAPI, HTTPException, Header, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from starlette.concurrency import run_in_threadpool
 from typing import List
 
 from agents import Runner
@@ -14,7 +12,7 @@ import agent as agent_module
 
 app = FastAPI(title="Tax Agent API")
 
-# Allow your Next.js origin (dev)
+# Allow your Next.js origin (dev + prod)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
@@ -33,18 +31,22 @@ class Message(BaseModel):
 class ChatRequest(BaseModel):
     messages: List[Message]
 
-# simple API key for the endpoint for security
 API_KEY = os.getenv("CHAT_API_KEY")
 
 @app.post("/api/chat")
 async def chat(req: ChatRequest, authorization: str | None = Header(None)):
+
     if API_KEY:
         if authorization is None or authorization != f"Bearer {API_KEY}":
             raise HTTPException(status_code=401, detail="Unauthorized")
 
     try:
+        # only last 10 messages for memory
+        last_messages = req.messages[-10:]
+
+        # Combine conversation for context
         conversation = "\n".join(
-            [f"{m.role}: {m.content}" for m in req.messages]
+            [f"{m.role}: {m.content}" for m in last_messages]
         )
 
         result = await Runner.run(
@@ -53,16 +55,10 @@ async def chat(req: ChatRequest, authorization: str | None = Header(None)):
             run_config=getattr(agent_module, "config", None)
         )
 
-        # Extracting reply
-        reply_text = None
-        if hasattr(result, "final_output") and result.final_output:
-            reply_text = result.final_output
-        elif hasattr(result, "output_text") and result.output_text:
-            reply_text = result.output_text
-        else:
-            reply_text = str(result)
+        reply_text = getattr(result, "final_output", None) or getattr(result, "output_text", None) or str(result)
 
         return {"reply": reply_text}
+
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
