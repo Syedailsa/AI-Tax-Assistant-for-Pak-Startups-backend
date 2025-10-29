@@ -21,7 +21,9 @@ More cominwill ne integrated soon..
 2. Text is **chunked and converted into embeddings** using OpenAI.  
 3. Embeddings are stored in **Pinecone** for semantic search.  
 4. The AI agent retrieves relevant chunks and provides **context-aware answers**.  
-5. Users can ask questions in **English or Urdu**, and the agent adapts accordingly.  
+5. Users can ask questions in **English or Urdu**, and the agent adapts accordingly.
+
+The backend is currently deployed on render free plan: https://ai-tax-assistant-for-pak-startups-backend.onrender.com/
 
 ## 🌍 Vision
 By combining **AI + local tax knowledge**, this project aims to make Pakistan’s taxation system easier to understand for **founders, freelancers, and small businesses**.
@@ -29,10 +31,18 @@ By combining **AI + local tax knowledge**, this project aims to make Pakistan’
 ## 🔮 Future Resources
 In the future, this project can expand into a **multi-agent ecosystem** where different specialized LLMs (Large Language Models) handle unique categories of users and tasks. For example:
 
-- **Freelancers Agent** → Focused on freelance taxation and registration.  
+- **Freelancers Agent** → Focused on freelance taxation and registration.
 - **Business Owners Agent** → Covers company compliance, tax filings, and business structures.  
 - **Startups Agent** → Assists early-stage startups with PSEB registration, NTN, and compliance.  
 - **Tech Startups Agent** → Special focus on IT/export-related tax benefits.  
 - **Entrepreneurs Agent** → General guidance on scaling, compliance, and financial awareness.  
 
 Using **handoff agent tasks**, conversations can smoothly transfer between these specialized agents, giving users **expert-level answers tailored to their situation**.
+
+
+
+
+
+
+
+
